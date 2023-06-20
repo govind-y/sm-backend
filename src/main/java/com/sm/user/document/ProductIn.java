@@ -1,16 +1,18 @@
 package com.sm.user.document;
 
-import com.sm.user.constatant.MongoCollection;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = MongoCollection.PRODUCT_IN)
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
 @Data
 public class ProductIn {
 
-            @Id
-            private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private Long id;
             private String productNumber;
             private String productName;
             private String product_type;

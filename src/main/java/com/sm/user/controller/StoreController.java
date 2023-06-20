@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@RestController
-@RequestMapping("/api")
 
 @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
+@RestController
+@RequestMapping("/api")
 public class StoreController {
 @Autowired
     private StoreRepository storeRepository;
@@ -56,7 +55,6 @@ private RegistrationSubscriptionRepository subscriptionRepository;
       store.setId(store1.getId());
         store.setStoreId(store1.getStoreId());
         store.setPhone(store1.getPhone());
-        store.setDocVerNbr(store1.getDocVerNbr()+1);
         store.setUpdatedTimeStamp(LocalDateTime.now());
         return  ResponseEntity.ok( storeRepository.save(store));
     }
@@ -64,11 +62,11 @@ private RegistrationSubscriptionRepository subscriptionRepository;
 
     @GetMapping("/allstore")
     public ResponseEntity<List<Store>> stores(){
-        return ResponseEntity.ok(storeRepository.findAll());
+        return ResponseEntity.ok(new ArrayList<Store>((Collection<? extends Store>) storeRepository.findAll()));
     }
 
-
-    @GetMapping("/hello")
+    @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
+    @GetMapping("/dd/hello")
     public ResponseEntity<String> hello(){
         return ResponseEntity.ok("Hello working");
     }

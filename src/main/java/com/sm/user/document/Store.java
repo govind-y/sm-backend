@@ -1,20 +1,21 @@
 package com.sm.user.document;
 
-import com.mongodb.lang.NonNull;
-import com.sm.user.constatant.MongoCollection;
 import com.sm.user.document.extention.AuditDocument;
 import com.sm.user.document.extention.RoomDetails;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+import javax.persistence.*;
 import java.util.List;
 
-@Document(collection = MongoCollection.STORE)
+@Entity
 @Data
+@NoArgsConstructor
 public class Store extends AuditDocument {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @NonNull
     private String storeName;
 
@@ -34,6 +35,7 @@ public class Store extends AuditDocument {
     private String registrationKey;
     @NonNull
     private String area;
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<RoomDetails> roomDetails;
 
 

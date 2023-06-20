@@ -29,9 +29,9 @@ public class CustomerController {
            customer.setUpdatedTimeStamp(LocalDateTime.now());
            return ResponseEntity.ok(customerRepository.save(customer));
        }
-        customer.setId(customer1.getId());
+      // customer.setId(customer1.getId());
        customer.setPhone(customer1.getPhone());
-        customer.setUpdatedTimeStamp(LocalDateTime.now());
+       customer.setUpdatedTimeStamp(LocalDateTime.now());
        customer.setCustomerNumber(customer1.getCustomerNumber());
         return ResponseEntity.ok(customerRepository.save(customer));
     }

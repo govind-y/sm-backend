@@ -23,6 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
@@ -71,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				.authorizeRequests().antMatchers( "/api/open/**","/api/authenticate","/swagger-ui.html#").permitAll().
+				.authorizeRequests().antMatchers( "/api/**","/api/authenticate","/swagger-ui/index.html").permitAll().
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
@@ -101,9 +104,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"OPTIONS"
 				)
 		);
-		config.setAllowedHeaders(
-				ImmutableList.of("*")
-		);
+		config.setAllowedHeaders(ImmutableList.of("*"));
+		config.setExposedHeaders(ImmutableList.of("*"));
 		config.setAllowCredentials(true);
 		val source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);

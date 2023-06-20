@@ -1,16 +1,18 @@
 package com.sm.user.document;
 
-import com.sm.user.constatant.MongoCollection;
 import com.sm.user.document.extention.AuditDocument;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = MongoCollection.ROOM_LOT_DETAILS)
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
 @Data
 public class RoomLotDetails extends AuditDocument {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String storeId;
     private String generatedLotName;
     private Integer lotCapacity;

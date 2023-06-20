@@ -1,19 +1,21 @@
 package com.sm.user.document;
 
-import com.sm.user.constatant.MongoCollection;
 import com.sm.user.document.extention.AuditDocument;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Data
-@Document(collection = MongoCollection.CUSTOMER_STORE_TRANSACTION)
+@Entity
 public class CustomerStoreTransaction extends AuditDocument {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String customerNumber;
     private Double storeCharge;
     private LocalDateTime chargeStartDate;

@@ -1,12 +1,11 @@
 package com.sm.user.repository;
 
 import com.sm.user.document.ProductIn;
-import com.sm.user.document.Store;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ProductInRepository extends MongoRepository<ProductIn,String> {
+public interface ProductInRepository extends JpaRepository<ProductIn,Long> {
 
     List<ProductIn> findAllByLotNo(String lotNo);
     List<ProductIn> findAllByStoreIdAndRoomNo(String storeId, String roomNo);

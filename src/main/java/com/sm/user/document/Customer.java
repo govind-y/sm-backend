@@ -1,20 +1,20 @@
 package com.sm.user.document;
 
-import com.sm.user.constatant.MongoCollection;
 import com.sm.user.document.extention.Address;
 import com.sm.user.document.extention.AuditDocument;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Document(collection = MongoCollection.CUSTOMER)
-public class Customer extends AuditDocument {
+//@Document(collection = MongoCollection.CUSTOMER)
+@Entity
+public class Customer  extends AuditDocument {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String customerNumber;
     private String firstName;
     private String lastName;
@@ -25,6 +25,7 @@ public class Customer extends AuditDocument {
     private String customerType;
     private String storeId;
     private String registerSession;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
 
