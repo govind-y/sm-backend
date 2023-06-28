@@ -31,9 +31,15 @@
     </dependency>-->
     <dependency>
       <groupId>io.springfox</groupId>
-      <artifactId>springfox-boot-starter</artifactId>
-      <version>3.0.0</version>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>2.9.2</version>
     </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>2.9.2</version>
+    </dependency>
+
       <dependency>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-web</artifactId>
@@ -83,7 +89,11 @@
       <artifactId>aws-lambda-java-core</artifactId>
       <version>1.2.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.amazonaws.serverless</groupId>
+      <artifactId>aws-serverless-java-container-springboot2</artifactId>
+      <version>1.4</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
@@ -103,7 +113,7 @@
 
   <build>
     <plugins>
-     <!-- <plugin>
+       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.3.0</version>
@@ -127,7 +137,7 @@
         </executions>
       </plugin>
       <plugin>
-        &lt;!&ndash; Build an executable JAR &ndash;&gt;
+
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.1.0</version>
@@ -140,7 +150,7 @@
             </manifest>
           </archive>
         </configuration>
-      </plugin>-->
+      </plugin>
 
       <plugin>
         <groupId>org.springframework.boot</groupId>

@@ -49,7 +49,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
          return  ResponseEntity.ok(storeRepository.save(store));
       }
         RegistrationSubscription subscription = subscriptionRepository.findByStoreKey(store.getRegistrationKey());
-      if(!(store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equals("ACTIVE"))){
+      if( !(subscription!=null && store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equals("ACTIVE"))){
           return ResponseEntity.badRequest().eTag("Failed due to invalid key").build();
       }
       store.setId(store1.getId());
@@ -62,7 +62,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
 
     @GetMapping("/allstore")
     public ResponseEntity<List<Store>> stores(){
-        return ResponseEntity.ok(new ArrayList<Store>((Collection<? extends Store>) storeRepository.findAll()));
+        return ResponseEntity.ok(new ArrayList<>(storeRepository.findAll()));
     }
 
     @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
