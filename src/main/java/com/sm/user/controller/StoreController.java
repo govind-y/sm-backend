@@ -2,10 +2,12 @@ package com.sm.user.controller;
 
 
 import com.sm.user.document.RegistrationSubscription;
+import com.sm.user.document.RoomLotDetails;
 import com.sm.user.document.Store;
 import com.sm.user.repository.RegistrationSubscriptionRepository;
 import com.sm.user.repository.StoreRepository;
 import com.sm.user.service.OtpService;
+import com.sm.user.service.RoomDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -27,10 +29,15 @@ public class StoreController {
 private RegistrationSubscriptionRepository subscriptionRepository;
 @Autowired
     OtpService otpService;
-
+@Autowired
+    RoomDetailsService roomDetailsService;
 
     @PostMapping("/open/store")
     public ResponseEntity<Store> create(@RequestBody Store store){
+        RegistrationSubscription subscription = subscriptionRepository.findByStoreKey(store.getRegistrationKey());
+        if( !(subscription!=null && store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equalsIgnoreCase("ACTIVE"))){
+            return ResponseEntity.badRequest().eTag("Failed due to invalid key").build();
+        }
         if(store.getRegistrationSessionYear()==null){
             store.setRegistrationSessionYear(String.valueOf(LocalDate.now().getYear()));
         }
@@ -42,21 +49,28 @@ private RegistrationSubscriptionRepository subscriptionRepository;
                 room.setRoomId(UUID.randomUUID().toString());
             }
         });
+
+
         Store store1= storeRepository.findByStoreIdOrPhone(store.getStoreId(),store.getPhone());
       if(ObjectUtils.isEmpty(store1)) {
           store.setCreatedDateTimeStamp(LocalDateTime.now());
           store.setUpdatedTimeStamp(LocalDateTime.now());
-         return  ResponseEntity.ok(storeRepository.save(store));
+          Store store2 = storeRepository.save(store);
+          roomDetailsService.generateRoomLots(store.getStoreId());
+         return ResponseEntity.ok(store2);
       }
-        RegistrationSubscription subscription = subscriptionRepository.findByStoreKey(store.getRegistrationKey());
-      if( !(subscription!=null && store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equals("ACTIVE"))){
-          return ResponseEntity.badRequest().eTag("Failed due to invalid key").build();
-      }
+
       store.setId(store1.getId());
         store.setStoreId(store1.getStoreId());
         store.setPhone(store1.getPhone());
         store.setUpdatedTimeStamp(LocalDateTime.now());
-        return  ResponseEntity.ok( storeRepository.save(store));
+        Integer roomBefore=store1.getNoOfRooms();
+        Store store2 = storeRepository.save(store);
+        if(roomBefore!=store2.getNoOfRooms()){
+            roomDetailsService.deleteLots(store.getStoreId());
+            roomDetailsService.generateRoomLots(store1.getStoreId());
+        }
+        return  ResponseEntity.ok(store2);
     }
 
 

@@ -9,4 +9,6 @@ public interface RoomLotDetailsRepository extends JpaRepository<RoomLotDetails,L
 
     List<RoomLotDetails> findAllByRoomNoAndStoreIdAndSession( String roomId, String storeId, String sessionYear);
     List<RoomLotDetails> findAllByStoreIdAndSession(  String storeId, String sessionYear);
+
+    void deleteByStoreId(String storeId);
  }
