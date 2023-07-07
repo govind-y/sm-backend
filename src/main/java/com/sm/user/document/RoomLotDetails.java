@@ -19,7 +19,7 @@ public class RoomLotDetails extends AuditDocument {
     private Integer floorNo;
     private String roomId;
     private String roomNo;
-    private Integer lotStatus;
+    private Integer currentLotCapacity;
     private String session;
     private String status;
     private String allocatedCustomer;

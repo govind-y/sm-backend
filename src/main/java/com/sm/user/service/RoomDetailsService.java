@@ -34,12 +34,13 @@ public class RoomDetailsService {
             IntStream.range(0, roomDetails.getFloorInRoom()).forEach(row -> {
 //col loop
                 IntStream.range(0, roomDetails.getColumnInRoom()).forEach(col -> {
-                    String lotNo = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + storeId;
+                    String lotName = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + storeId;
                     RoomLotDetails roomLotDetails = new RoomLotDetails();
                     roomLotDetails.setFloorNo(row);
                     roomLotDetails.setRoomNo(roomDetails.getRoomNo());
-                    roomLotDetails.setGeneratedLotName(lotNo);
+                    roomLotDetails.setGeneratedLotName(lotName);
                     roomLotDetails.setLotCapacity(roomDetails.getPerLotCapacity());
+                    roomLotDetails.setCurrentLotCapacity(roomDetails.getPerLotCapacity());
                     roomLotDetails.setRoomId(roomDetails.getRoomId());
                     roomLotDetails.setSession(String.valueOf(LocalDate.now().getYear()));
                     roomLotDetails.setStoreId(storeId);
