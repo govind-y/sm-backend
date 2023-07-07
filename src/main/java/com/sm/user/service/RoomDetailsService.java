@@ -2,15 +2,21 @@ package com.sm.user.service;
 
 import com.sm.user.document.RoomLotDetails;
 import com.sm.user.document.Store;
+import com.sm.user.document.dto.AvailableRooms;
 import com.sm.user.repository.RoomLotDetailsRepository;
 import com.sm.user.repository.StoreRepository;
+import com.sm.user.transformer.RoomTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -20,7 +26,8 @@ public class RoomDetailsService {
     private RoomLotDetailsRepository roomLotDetailsRepository;
     @Autowired
     private StoreRepository storeRepository;
-
+@Autowired
+private RoomTransformer roomTransformer;
 
     public void generateRoomLots(String storeId){
         Store store = storeRepository.findByStoreIdOrPhone(storeId, storeId);
@@ -37,6 +44,7 @@ public class RoomDetailsService {
                     String lotName = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + storeId;
                     RoomLotDetails roomLotDetails = new RoomLotDetails();
                     roomLotDetails.setFloorNo(row);
+                    roomLotDetails.setColumnNo(col);
                     roomLotDetails.setRoomNo(roomDetails.getRoomNo());
                     roomLotDetails.setGeneratedLotName(lotName);
                     roomLotDetails.setLotCapacity(roomDetails.getPerLotCapacity());
@@ -54,5 +62,14 @@ public class RoomDetailsService {
 
     public void deleteLots(String storeId){
         roomLotDetailsRepository.deleteByStoreId(storeId);
+    }
+
+    public  List<AvailableRooms> getAvailableRooms(String storeId, String sessionYear){
+        List<RoomLotDetails> roomLotDetails = roomLotDetailsRepository.findAllByStoreIdAndSession(storeId, sessionYear);
+        if(CollectionUtils.isEmpty(roomLotDetails)){
+            return new ArrayList<>();
+        }
+     return    roomTransformer.convertLotDetailsResponse(roomLotDetails);
+
     }
 }

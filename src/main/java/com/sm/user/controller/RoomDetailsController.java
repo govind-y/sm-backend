@@ -60,18 +60,7 @@ public class RoomDetailsController {
         if(StringUtils.isEmpty(session)){
             session=String.valueOf( LocalDate.now().getYear());
         }
-        List<RoomLotDetails> roomLotDetails = roomLotDetailsRepository.findAllByStoreIdAndSession(storeId, session);
-if(CollectionUtils.isEmpty(roomLotDetails)){
-    return ResponseEntity.ok(new ArrayList<>());
-}
-        Map<String, List<RoomLotDetails>> availableRooms = roomLotDetails.stream().filter(item -> StringUtils.isEmpty(item.getAllocatedCustomer())).collect(Collectors.groupingBy(RoomLotDetails::getRoomNo));
-        List<AvailableRooms> availableRooms2 = availableRooms.entrySet().stream().map(item -> {
-            AvailableRooms availableRooms1 = new AvailableRooms();
-            availableRooms1.setRoomNo(item.getKey());
-            availableRooms1.setRoomLotDetails(item.getValue());
-            return availableRooms1;
-        }).collect(Collectors.toList());
-        return ResponseEntity.ok(availableRooms2);
+        return ResponseEntity.ok(roomDetailsService.getAvailableRooms(storeId,session));
 
     }
 

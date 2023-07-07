@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class AvailableRooms {
     private String roomNo;
-    private List<RoomLotDetails> roomLotDetails;
+    private List<FloorDetails> floorDetails;
 }
