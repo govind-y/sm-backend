@@ -23,7 +23,7 @@ public class CustomerController {
         if(customer.getRegisterSession()==null){
             customer.setRegisterSession(String.valueOf(LocalDateTime.now().getYear()));
         }
-       Customer customer1= customerRepository.findByPhoneOrCustomerNumber(customer.getPhone(),customer.getCustomerNumber());
+       Customer customer1= customerRepository.findByPhone(customer.getPhone());
        if(ObjectUtils.isEmpty(customer1)){
            customer.setCreatedDateTimeStamp(LocalDateTime.now());
            customer.setUpdatedTimeStamp(LocalDateTime.now());
@@ -45,7 +45,7 @@ public class CustomerController {
     @GetMapping("/customer/phone/{phone}")
     public ResponseEntity<Customer> getCustomerByPhoneOrCustomer(@PathVariable("phone") String phone){
 
-        return ResponseEntity.ok(customerRepository.findByPhoneOrCustomerNumber(phone,phone));
+        return ResponseEntity.ok(customerRepository.findByPhone(phone));
     }
 
 }

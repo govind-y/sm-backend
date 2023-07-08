@@ -1,4 +1,4 @@
-package com.sm.user.document.extention;
+package com.sm.user.document;
 
 import com.sm.user.document.ProductOut;
 import jdk.dynalink.linker.LinkerServices;

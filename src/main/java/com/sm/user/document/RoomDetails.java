@@ -1,13 +1,14 @@
-package com.sm.user.document.extention;
+package com.sm.user.document;
 
 import com.sm.user.document.Store;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
-public class RoomDetails {
+public class RoomDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

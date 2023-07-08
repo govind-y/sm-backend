@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
 
-   Customer  findByPhoneOrCustomerNumber(String phone, String customerNo);
+   Customer  findByPhone(String phone);
    List<Customer> findAllByStoreId(String storeId);
 }

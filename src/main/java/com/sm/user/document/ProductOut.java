@@ -1,7 +1,6 @@
 package com.sm.user.document;
 
 import com.sm.user.document.extention.AuditDocument;
-import com.sm.user.document.extention.Product;
 import lombok.Data;
 
 import javax.persistence.*;

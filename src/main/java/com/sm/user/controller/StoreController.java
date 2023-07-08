@@ -55,7 +55,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
       if(ObjectUtils.isEmpty(store1)) {
           store.setCreatedDateTimeStamp(LocalDateTime.now());
           store.setUpdatedTimeStamp(LocalDateTime.now());
-          store.getRoomDetails().stream().forEach(item->item.setStore(store));
+       //   store.getRoomDetails().stream().forEach(item->item.setStore(store));
           Store store2 = storeRepository.save(store);
           roomDetailsService.generateRoomLots(store.getStoreId());
          return ResponseEntity.ok(store2);
@@ -71,6 +71,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
             roomDetailsService.deleteLots(store.getStoreId());
             roomDetailsService.generateRoomLots(store1.getStoreId());
         }
+
         return  ResponseEntity.ok(store2);
     }
 

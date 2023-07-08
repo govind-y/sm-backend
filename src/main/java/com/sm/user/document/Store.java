@@ -1,7 +1,6 @@
 package com.sm.user.document;
 
 import com.sm.user.document.extention.AuditDocument;
-import com.sm.user.document.extention.RoomDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
