@@ -1,10 +1,8 @@
 package com.sm.user.controller;
 
 import com.sm.user.document.RoomLotDetails;
-import com.sm.user.document.Store;
 import com.sm.user.document.dto.AvailableRooms;
 import com.sm.user.repository.RoomLotDetailsRepository;
-import com.sm.user.repository.StoreRepository;
 import com.sm.user.service.RoomDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/lots")
@@ -49,6 +43,7 @@ public class RoomDetailsController {
             generateLots(storeId);
             roomLots = roomLotDetailsRepository.findAllByRoomNoAndStoreIdAndSession(roomNo, storeId, session);
         }
+        roomLots.removeIf(item-> !StringUtils.isEmpty(item.getAllocatedCustomer()));
         return ResponseEntity.ok(roomLots);
 
     }

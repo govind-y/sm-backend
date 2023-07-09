@@ -8,6 +8,7 @@ import com.sm.user.repository.RegistrationSubscriptionRepository;
 import com.sm.user.repository.StoreRepository;
 import com.sm.user.service.OtpService;
 import com.sm.user.service.RoomDetailsService;
+import com.sm.user.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -39,14 +40,14 @@ private RegistrationSubscriptionRepository subscriptionRepository;
             return ResponseEntity.badRequest().eTag("Failed due to invalid key").build();
         }
         if(store.getRegistrationSessionYear()==null){
-            store.setRegistrationSessionYear(String.valueOf(LocalDate.now().getYear()));
+            store.setRegistrationSessionYear(CommonUtils.getCurrentSessionYear());
         }
         if(StringUtils.isEmpty(store.getStoreId())){
             store.setStoreId(UUID.randomUUID().toString());
         }
         store.getRoomDetails().stream().forEach(room->{
             if(StringUtils.isEmpty(room.getRoomId())){
-                room.setRoomId(UUID.randomUUID().toString());
+                room.setRoomId(CommonUtils.generateUUID());
             }
         });
 

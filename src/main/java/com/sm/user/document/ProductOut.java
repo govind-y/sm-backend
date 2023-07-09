@@ -9,16 +9,15 @@ import javax.persistence.*;
 @Entity
 public class ProductOut extends AuditDocument {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-         private Long id;
-           private String productNumber;
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private Long id;
             private String lotNo;
             private String quantity;
             @ManyToOne
             @JoinColumn(name = "product_id")
-           private Product product;
+            private Product product;
             private String reasonOfOut;
-            private String soldToBossinessMan;
+            private Long  soldBussinessManId;
 
 }
