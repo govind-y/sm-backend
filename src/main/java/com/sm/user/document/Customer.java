@@ -25,6 +25,7 @@ public class Customer  extends AuditDocument {
     private String customerType;
     private String storeId;
     private String registerSession;
+    private String roleType;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses;
 

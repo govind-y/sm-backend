@@ -28,6 +28,9 @@ public class RoomDetailsService {
     private StoreRepository storeRepository;
 @Autowired
 private RoomTransformer roomTransformer;
+@Autowired
+private CommonService commonService;
+
 
     public void generateRoomLots(String storeId){
         Store store = storeRepository.findByStoreIdOrPhone(storeId, storeId);
@@ -69,7 +72,7 @@ private RoomTransformer roomTransformer;
         if(CollectionUtils.isEmpty(roomLotDetails)){
             return new ArrayList<>();
         }
-     return    roomTransformer.convertLotDetailsResponse(roomLotDetails);
+     return    roomTransformer.convertLotDetailsResponse(commonService.getAvailableLotDetails(roomLotDetails));
 
     }
 }

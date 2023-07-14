@@ -3,6 +3,7 @@ package com.sm.user.controller;
 import com.sm.user.document.RoomLotDetails;
 import com.sm.user.document.dto.AvailableRooms;
 import com.sm.user.repository.RoomLotDetailsRepository;
+import com.sm.user.service.CommonService;
 import com.sm.user.service.RoomDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ public class RoomDetailsController {
     private RoomDetailsService  roomDetailsService;
     @Autowired
     private RoomLotDetailsRepository roomLotDetailsRepository;
+    @Autowired
+   private CommonService commonService;
 
 
     @PostMapping("/generate/{storeId}")
@@ -43,8 +46,7 @@ public class RoomDetailsController {
             generateLots(storeId);
             roomLots = roomLotDetailsRepository.findAllByRoomNoAndStoreIdAndSession(roomNo, storeId, session);
         }
-        roomLots.removeIf(item-> !StringUtils.isEmpty(item.getAllocatedCustomer()));
-        return ResponseEntity.ok(roomLots);
+        return ResponseEntity.ok(commonService.getAvailableLotDetails(roomLots));
 
     }
 

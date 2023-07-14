@@ -4,6 +4,7 @@ import com.sm.user.document.extention.AuditDocument;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,10 +15,10 @@ public class ProductOut extends AuditDocument {
             private Long id;
             private String lotNo;
             private String quantity;
-            @ManyToOne
-            @JoinColumn(name = "product_id")
-            private Product product;
             private String reasonOfOut;
+            private Long  customerId;
             private Long  soldBussinessManId;
+            @OneToMany(cascade = CascadeType.ALL,mappedBy = "productOut")
+            private List<Items> items;
 
 }

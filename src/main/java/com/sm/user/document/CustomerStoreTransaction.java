@@ -16,7 +16,7 @@ public class CustomerStoreTransaction extends AuditDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String customerNumber;
+    private Long customerId;
     private Double storeCharge;
     private LocalDateTime chargeStartDate;
     private LocalDateTime chargeEndDate;

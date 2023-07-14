@@ -17,7 +17,6 @@ public class Product {
     private String productType;
     private String productWeight;
     private String productSize;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "product")
-    private List<ProductOut> productOuts;
+
 
 }
