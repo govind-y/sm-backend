@@ -37,7 +37,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 		if (store!=null && phone.equals(username)) {
 			return new User(phone, "$2a$10$.JjsHs.vrEm1tbpkq98VJedRj9vMCHaSmL8GHGiy0E9C3yACCbTjG",
-					Arrays.asList(new CustomAuthority("userType","STORE"),new CustomAuthority("storeId",store.getStoreId()),new CustomAuthority("phone",store.getPhone()),new CustomAuthority("sessionYear",store.getRegistrationSessionYear()),new CustomAuthority("rooms",String.valueOf(store.getNoOfRooms()))));
+					Arrays.asList(new CustomAuthority("userType","STORE"),new CustomAuthority("storeId",store.getStoreId()),new CustomAuthority("phone",store.getPhone()),new CustomAuthority("sessionYear",store.getRegistrationSessionYear()),new CustomAuthority("rooms",String.valueOf(store.getNoOfRooms())),new CustomAuthority("storeName",String.valueOf(store.getStoreName()))));
 		} else if(customer!=null && phone.equals(username)){
 			return new User(phone, "$2a$10$.JjsHs.vrEm1tbpkq98VJedRj9vMCHaSmL8GHGiy0E9C3yACCbTjG",
 					Arrays.asList(new CustomAuthority("userType",customer.getRoleType()),new CustomAuthority("storeId",customer.getStoreId()),new CustomAuthority("phone",customer.getPhone()),new CustomAuthority("sessionYear",customer.getRegisterSession()),new CustomAuthority("email",String.valueOf(customer.getEmail()))));

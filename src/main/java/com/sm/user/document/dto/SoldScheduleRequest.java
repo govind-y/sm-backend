@@ -2,8 +2,6 @@ package com.sm.user.document.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class SoldScheduleRequest {
     private Long id;
@@ -14,5 +12,5 @@ public class SoldScheduleRequest {
     private Long soldOutQuantity;
     private Double price;
     private String soldType;//full, partial
-
+    private Long supplierId;
 }

@@ -5,6 +5,7 @@ import com.sm.user.document.dto.ItemDetails;
 import com.sm.user.document.dto.LotDetails;
 import com.sm.user.document.dto.ProductDetails;
 import com.sm.user.repository.CustomerRepository;
+import com.sm.user.repository.LotSoldScheduleRepository;
 import com.sm.user.repository.ProductInRepository;
 import com.sm.user.repository.ProductRepository;
 import com.sm.user.service.CommonService;
@@ -21,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")
@@ -36,6 +36,8 @@ public class ProductInController {
     private ProductRepository productRepository;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private LotSoldScheduleRepository soldScheduleRepository;
 
     @PostMapping("/productin")
     public ResponseEntity<?> create(@RequestBody ProductIn productIn) {
@@ -47,7 +49,7 @@ public class ProductInController {
             throw new BadRequestException("Not is already occupied");
         }
         Integer i = Integer.parseInt(productIn.getQuantity());
-        List<Items> items = IntStream.range(1, i).mapToObj(intValue -> {
+        List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
             Items item = new Items();
             item.setItemNo(intValue);
             Product product = new Product();
@@ -91,7 +93,7 @@ public class ProductInController {
             ProductDetails productDetails = new ProductDetails();
             productDetails.setCustomerId(productCus.getKey());
             Optional<Customer> customer = customerRepository.findById(productCus.getKey());
-            productDetails.setCustomerName(customer.isPresent() ? customer.get().getFirstName() + " " + customer.get().getLastName() : "");
+            productDetails.setCustomerName(customer.isPresent() ? customer.get().getFirstName() + " " + (customer.get().getLastName()!=null?customer.get().getLastName():"") : "");
 
             Map<String, List<ProductIn>> map = productCus.getValue().stream().filter(productLot -> productLot.getLotNo() != null).collect(Collectors.groupingBy(ProductIn::getLotNo));
             ;
@@ -99,6 +101,8 @@ public class ProductInController {
             productDetails.setLotDetails(map.entrySet().stream().map(item -> {
                 LotDetails lotDetails = new LotDetails();
                 lotDetails.setLotNo(item.getKey());
+                List<LotSoldSchedule> soldSchedule = soldScheduleRepository.findByLotNo(item.getKey());
+                lotDetails.setLotStatus(!CollectionUtils.isEmpty(soldSchedule)?soldSchedule.iterator().next().getSoldStatus():"");
                 ProductIn productIn = item.getValue().iterator().next();
                 products.stream().filter(product -> product.getId().equals(productIn.getProductId())).findFirst().ifPresent(product -> {
                     lotDetails.setProductType(product.getProductType());
@@ -109,8 +113,8 @@ public class ProductInController {
                         .flatMap(x -> x.stream())
                         .collect(Collectors.toSet());
                 lotDetails.setTotalQuantity(lotItems.size());
-                lotDetails.setAvailableQuantity(lotItems.stream().filter(itemDetail->itemDetail.getProductOutId()!=null && itemDetail.getWeight()!=null && itemDetail.getWeight()>0).count());
-                lotDetails.setItemDetails(lotItems.stream().map(items -> {
+                lotDetails.setAvailableQuantity(lotItems.size()-lotItems.stream().filter(itemDetail->itemDetail.getProductOutId()!=null && itemDetail.getWeight()!=null && itemDetail.getWeight()>0).count());
+                List<ItemDetails> itemDetailsList = lotItems.stream().map(items -> {
                     ItemDetails itemDetails = new ItemDetails();
                     itemDetails.setId(items.getId());
                     itemDetails.setWeight(items.getWeight());
@@ -118,7 +122,9 @@ public class ProductInController {
                     itemDetails.setItemNo(items.getItemNo());
                     itemDetails.setWeight(items.getWeight());
                     return itemDetails;
-                }).collect(Collectors.toList()));
+                }).collect(Collectors.toList());
+                itemDetailsList.sort(Comparator.comparing(ItemDetails::getItemNo));
+                lotDetails.setItemDetails(itemDetailsList);
                 lotDetails.setProductInId(productIn.getId());
                 return lotDetails;
             }).collect(Collectors.toList()));

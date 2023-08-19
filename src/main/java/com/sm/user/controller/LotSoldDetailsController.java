@@ -35,6 +35,7 @@ public class LotSoldDetailsController {
         entity.setSession(CommonUtils.getCurrentSessionYear());
         entity.setSoldStatus("IN_PROGRESS");
         entity.setSoldDate(LocalDate.now());
+        entity.setSupplierId(soldScheduleRequest.getSupplierId());
         if(soldScheduleRequest.getId()==null){
             entity.setCreatedDateTimeStamp(LocalDateTime.now());
         }

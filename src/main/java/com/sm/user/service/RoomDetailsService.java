@@ -44,7 +44,7 @@ private CommonService commonService;
             IntStream.range(0, roomDetails.getFloorInRoom()).forEach(row -> {
 //col loop
                 IntStream.range(0, roomDetails.getColumnInRoom()).forEach(col -> {
-                    String lotName = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + storeId;
+                    String lotName = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + store.getStoreName();
                     RoomLotDetails roomLotDetails = new RoomLotDetails();
                     roomLotDetails.setFloorNo(row);
                     roomLotDetails.setColumnNo(col);

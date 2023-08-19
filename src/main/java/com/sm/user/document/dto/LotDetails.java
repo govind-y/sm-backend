@@ -15,5 +15,6 @@ public class LotDetails{
     private Long availableQuantity;
     private Integer totalQuantity;
     private List<ItemDetails> itemDetails;
+    private String lotStatus;
 
 }
