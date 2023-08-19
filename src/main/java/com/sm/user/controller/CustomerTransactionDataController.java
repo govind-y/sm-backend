@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+
+@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
 public class CustomerTransactionDataController {
     @Autowired
     private CustomerStoreTransactionRepository transactionRepository;
