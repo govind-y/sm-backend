@@ -16,9 +16,8 @@ public class Items {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToOne
-    @JoinColumn(name = "product_out_id")
-    private ProductOut productOut;
+
+    private Long productOutId;
     @ManyToOne
     @JoinColumn(name = "product_in_id")
     private ProductIn productIn;

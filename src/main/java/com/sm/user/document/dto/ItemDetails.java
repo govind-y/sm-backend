@@ -8,7 +8,7 @@ public class ItemDetails {
     private Integer itemNo;
     private Integer weight;
     private String productInId;
-    private Integer productOutId;
+    private String productOutId;
 
 
 }

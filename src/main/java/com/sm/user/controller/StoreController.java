@@ -1,9 +1,11 @@
 package com.sm.user.controller;
 
 
+import com.sm.user.document.Customer;
 import com.sm.user.document.RegistrationSubscription;
 import com.sm.user.document.RoomLotDetails;
 import com.sm.user.document.Store;
+import com.sm.user.repository.CustomerRepository;
 import com.sm.user.repository.RegistrationSubscriptionRepository;
 import com.sm.user.repository.StoreRepository;
 import com.sm.user.service.OtpService;
@@ -26,6 +28,8 @@ import java.util.*;
 public class StoreController {
 @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 @Autowired
 private RegistrationSubscriptionRepository subscriptionRepository;
 @Autowired
@@ -90,6 +94,15 @@ private RegistrationSubscriptionRepository subscriptionRepository;
 
     @GetMapping("/open/generateOtp")
     public ResponseEntity<String> generateOtp(@RequestParam String mob){
+        Store store = storeRepository.findByStoreIdOrPhone(mob, mob);
+        Customer customer=null;
+        if(ObjectUtils.isEmpty(store)){
+              customer = customerRepository.findByPhone(mob);
+        }else if(customer==null && store==null){
+            return ResponseEntity.badRequest().body("Mob is not registered with the system !"+mob);
+        }
+
+
         int otp = otpService.generateOTP(mob);
         return ResponseEntity.ok("Generated Otp : "+otp);
     }

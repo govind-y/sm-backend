@@ -18,7 +18,7 @@ public class ProductOut extends AuditDocument {
             private String reasonOfOut;
             private Long  customerId;
             private Long  soldBussinessManId;
-            @OneToMany(cascade = CascadeType.ALL,mappedBy = "productOut")
-            private List<Items> items;
+            private String session;
+
 
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +19,7 @@ public class CommonService {
 
     public RoomLotDetails getAvailableLotDetails(String lotNo){
         RoomLotDetails roomLotDetails = detailsRepository.findAllByGeneratedLotName(lotNo);
-        if(!StringUtils.isEmpty(roomLotDetails.getAllocatedCustomer()) && roomLotDetails.getCurrentLotCapacity()==roomLotDetails.getLotCapacity()){
+        if(roomLotDetails.getCurrentLotCapacity()>0){
             return roomLotDetails;
         }
         return null;
@@ -30,5 +32,9 @@ public class CommonService {
             lotDetails.removeIf(item->!StringUtils.isEmpty(item.getAllocatedCustomer()) && item.getCurrentLotCapacity()==item.getLotCapacity());
         }
         return lotDetails;
+    }
+
+    public String getCurrentSession(){
+        return String.valueOf(LocalDate.now().getYear());
     }
 }

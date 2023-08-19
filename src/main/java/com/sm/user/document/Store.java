@@ -32,6 +32,7 @@ public class Store extends AuditDocument {
     private String address;
     @NonNull
     private String registrationKey;
+    private Long perItemCharge;
     @NonNull
     private String area;
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
