@@ -4,13 +4,12 @@ import com.sm.user.document.*;
 import com.sm.user.document.dto.ItemDetails;
 import com.sm.user.document.dto.LotDetails;
 import com.sm.user.document.dto.ProductDetails;
-import com.sm.user.repository.CustomerRepository;
-import com.sm.user.repository.LotSoldScheduleRepository;
-import com.sm.user.repository.ProductInRepository;
-import com.sm.user.repository.ProductRepository;
+import com.sm.user.repository.*;
 import com.sm.user.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -31,6 +30,8 @@ public class ProductInController {
     @Autowired
     private ProductInRepository productInRepository;
     @Autowired
+    private ItemsRepository itemsRepository;
+    @Autowired
     private CustomerRepository customerRepository;
     @Autowired
     private ProductRepository productRepository;
@@ -38,8 +39,12 @@ public class ProductInController {
     private CommonService commonService;
     @Autowired
     private LotSoldScheduleRepository soldScheduleRepository;
+    @Autowired
+    RoomLotDetailsRepository roomLotDetailsRepository;
 
     @PostMapping("/productin")
+    @Async
+    @Transactional
     public ResponseEntity<?> create(@RequestBody ProductIn productIn) {
         if (productIn.getProductInDate() == null) {
             productIn.setProductInDate(LocalDate.now());
@@ -48,6 +53,9 @@ public class ProductInController {
         if (ObjectUtils.isEmpty(roomLotDetails)) {
             throw new BadRequestException("Not is already occupied");
         }
+        productIn.setCreatedDateTimeStamp(LocalDateTime.now());
+        productIn.setUpdatedTimeStamp(LocalDateTime.now());
+
         Integer i = Integer.parseInt(productIn.getQuantity());
         List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
             Items item = new Items();
@@ -60,9 +68,9 @@ public class ProductInController {
             return item;
         }).collect(Collectors.toList());
         productIn.setItems(items);
-        productIn.setCreatedDateTimeStamp(LocalDateTime.now());
-        productIn.setUpdatedTimeStamp(LocalDateTime.now());
         productInRepository.save(productIn);
+//        itemsRepository.saveAll(items);
+        roomLotDetailsRepository.updateCustomerNo(productIn.getLotNo(),String.valueOf(productIn.getCustomerId()));
         return ResponseEntity.ok("Product in successfully !");
     }
 

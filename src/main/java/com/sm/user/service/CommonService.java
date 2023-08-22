@@ -1,6 +1,7 @@
 package com.sm.user.service;
 
 import com.sm.user.document.RoomLotDetails;
+import com.sm.user.repository.ProductInRepository;
 import com.sm.user.repository.RoomLotDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ import java.util.List;
 public class CommonService {
     @Autowired
     private RoomLotDetailsRepository detailsRepository;
+    @Autowired
+    private ProductInRepository productInRepository;
 
 
     public RoomLotDetails getAvailableLotDetails(String lotNo){
@@ -29,6 +32,11 @@ public class CommonService {
     public List<RoomLotDetails> getAvailableLotDetails(List<RoomLotDetails> lotDetails){
 
          if(!CollectionUtils.isEmpty(lotDetails)){
+//          String storeId=    lotDetails.iterator().next().getStoreId();
+//             lotDetails.stream().map(RoomLotDetails::getRoomNo).forEach(roomNo->{
+//                 storeId
+//             });
+         //    productInRepository.findAllByStoreIdAndRoomNo()
             lotDetails.removeIf(item->!StringUtils.isEmpty(item.getAllocatedCustomer()) && item.getCurrentLotCapacity()==item.getLotCapacity());
         }
         return lotDetails;

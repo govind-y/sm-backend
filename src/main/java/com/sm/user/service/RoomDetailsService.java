@@ -72,7 +72,7 @@ private CommonService commonService;
         if(CollectionUtils.isEmpty(roomLotDetails)){
             return new ArrayList<>();
         }
-     return    roomTransformer.convertLotDetailsResponse(commonService.getAvailableLotDetails(roomLotDetails));
+     return  roomTransformer.convertLotDetailsResponse(commonService.getAvailableLotDetails(roomLotDetails));
 
     }
 }

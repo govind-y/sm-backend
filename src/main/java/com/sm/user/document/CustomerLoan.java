@@ -24,7 +24,6 @@ public class CustomerLoan extends AuditDocument {
     private Double amount;
     private Double rateOfInterest;
     private String transactionType;
+    private Integer countOfPackets;
     private LocalDateTime transactionDate;
-
-
 }
