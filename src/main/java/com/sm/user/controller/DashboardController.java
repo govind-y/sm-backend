@@ -1,5 +1,6 @@
 package com.sm.user.controller;
 
+import com.sm.user.document.dto.DashboardCustomerResponse;
 import com.sm.user.document.dto.ResponseData;
 import com.sm.user.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,17 @@ public class DashboardController {
         if(identifierType.equalsIgnoreCase("brand")){
             return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByBrandType(identifier)));
         }else if(identifierType.equalsIgnoreCase("room")){
-            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByBrandType(identifier)));
+            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByRoomNo(identifier)));
         }else{
             return ResponseEntity.badRequest().eTag("No identifier matched").build();
         }
+
+    }
+
+
+    @GetMapping("/customerResponse/session/{session}/averageRate/{averageRate}")
+    public ResponseEntity<List<DashboardCustomerResponse>> getCustomerResponse(@PathVariable("session") String session, @PathVariable("averageRate") Long averageRate, @RequestParam(required = false) Long stroeCharge){
+       return   ResponseEntity.ok(dashboardService.getDashboardResponse(session, averageRate,stroeCharge==null?105:stroeCharge));
 
     }
 }

@@ -19,6 +19,7 @@ public class ProductOut extends AuditDocument {
             private Long  customerId;
             private Long  soldBussinessManId;
             private String session;
+            private String storeId;
 
 
 }

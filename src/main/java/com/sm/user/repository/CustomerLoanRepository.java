@@ -8,4 +8,5 @@ import java.util.List;
 public interface CustomerLoanRepository extends JpaRepository<CustomerLoan , Long> {
 
     List<CustomerLoan> findAllByStoreId(String storeId);
+    List<CustomerLoan> findAllByCustomerId(Long customerid);
 }

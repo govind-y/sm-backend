@@ -12,5 +12,6 @@ public class ProductOutRequest {
     private String reasonOfOut;
     private Long  customerId;
     private Long  soldBusinessManId;
+    private String storeId;
     private List<ItemDetailsRequest> itemIds;
 }

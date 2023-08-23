@@ -13,4 +13,7 @@ public interface ItemsRepository extends JpaRepository<Items,Long> {
     @Modifying
     @Query("update Items item set item.productOutId = :productOutId ,item.weight= :weight where item.id = :id ")
     int setProductOutId(@Param("productOutId") Long productOutId,@Param("weight") Integer weight, @Param("id") Long id);
+
+//    @Query(value = "select i from Items i where i.productIn.id=:productInId and i.productOutId is not null ")
+//    List<Items> findAllByproductInIdAndOutIdNotNull(List<Long> productInId);
 }
