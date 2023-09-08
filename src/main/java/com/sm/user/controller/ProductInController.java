@@ -50,8 +50,9 @@ public class ProductInController {
             productIn.setProductInDate(LocalDate.now());
         }
         RoomLotDetails roomLotDetails = commonService.getAvailableLotDetails(productIn.getLotNo());
-        if (ObjectUtils.isEmpty(roomLotDetails)) {
-            throw new BadRequestException("Not is already occupied");
+        Integer currentLotCapacity = roomLotDetails.getCurrentLotCapacity() - Integer.parseInt(productIn.getQuantity());
+        if (ObjectUtils.isEmpty(roomLotDetails) && currentLotCapacity>0) {
+            throw new BadRequestException("Lot capacity already occupied");
         }
         productIn.setCreatedDateTimeStamp(LocalDateTime.now());
         productIn.setUpdatedTimeStamp(LocalDateTime.now());
@@ -70,7 +71,8 @@ public class ProductInController {
         productIn.setItems(items);
         productInRepository.save(productIn);
 //        itemsRepository.saveAll(items);
-        roomLotDetailsRepository.updateCustomerNo(productIn.getLotNo(),String.valueOf(productIn.getCustomerId()));
+
+        roomLotDetailsRepository.updateCustomerNo(productIn.getLotNo(),currentLotCapacity,String.valueOf(productIn.getCustomerId()));
         return ResponseEntity.ok("Product in successfully !");
     }
 
@@ -110,7 +112,14 @@ public class ProductInController {
                 LotDetails lotDetails = new LotDetails();
                 lotDetails.setLotNo(item.getKey());
                 List<LotSoldSchedule> soldSchedule = soldScheduleRepository.findByLotNo(item.getKey());
-                lotDetails.setLotStatus(!CollectionUtils.isEmpty(soldSchedule)?soldSchedule.iterator().next().getSoldStatus():"");
+                if(!CollectionUtils.isEmpty(soldSchedule)){
+                    lotDetails.setLotStatus(soldSchedule.iterator().next().getSoldStatus());
+                    lotDetails.setSoldBossinessManId(soldSchedule.iterator().next().getSupplierId());
+                    Optional<Customer> supplier = customerRepository.findById(soldSchedule.iterator().next().getSupplierId());
+                    productDetails.setCustomerName(supplier.isPresent() ? supplier.get().getFirstName() + " " + (supplier.get().getLastName()!=null?supplier.get().getLastName():"") : "");
+
+                }
+
                 ProductIn productIn = item.getValue().iterator().next();
                 products.stream().filter(product -> product.getId().equals(productIn.getProductId())).findFirst().ifPresent(product -> {
                     lotDetails.setProductType(product.getProductType());
@@ -134,6 +143,7 @@ public class ProductInController {
                 itemDetailsList.sort(Comparator.comparing(ItemDetails::getItemNo));
                 lotDetails.setItemDetails(itemDetailsList);
                 lotDetails.setProductInId(productIn.getId());
+
                 return lotDetails;
             }).collect(Collectors.toList()));
 

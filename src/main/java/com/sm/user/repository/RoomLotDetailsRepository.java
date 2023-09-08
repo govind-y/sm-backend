@@ -16,6 +16,8 @@ public interface RoomLotDetailsRepository extends JpaRepository<RoomLotDetails,L
 
     void deleteByStoreId(String storeId);
     @Modifying
-    @Query(value = "update room_lot_details set allocated_customer=:customerNo where generated_lot_name= :lotNo", nativeQuery = true)
-    int updateCustomerNo(String lotNo, String customerNo);
+    @Query(value = "update room_lot_details set allocated_customer=:customerNo current_lot_capacity=:currentLotCapacity where generated_lot_name= :lotNo", nativeQuery = true)
+    int updateCustomerNo(String lotNo, Integer currentLotCapacity, String customerNo);
+
+
  }

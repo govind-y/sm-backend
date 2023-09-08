@@ -50,7 +50,15 @@ public class RoomDetailsController {
 
     }
 
+    @GetMapping("/full/store/{storeId}")
+    public ResponseEntity<List<AvailableRooms>>  getfullLotDetails(@PathVariable String storeId, @RequestParam(required = false) String session){
 
+        if(StringUtils.isEmpty(session)){
+            session=String.valueOf( LocalDate.now().getYear());
+        }
+        return ResponseEntity.ok(roomDetailsService.getAllRooms(storeId,session));
+
+    }
     @GetMapping("/available/store/{storeId}")
     public ResponseEntity<List<AvailableRooms>>  getAvailable(@PathVariable String storeId, @RequestParam(required = false) String session){
 

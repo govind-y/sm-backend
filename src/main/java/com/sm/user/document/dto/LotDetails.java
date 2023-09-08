@@ -14,6 +14,8 @@ public class LotDetails{
     private String productSize;
     private Long availableQuantity;
     private Integer totalQuantity;
+    private Long soldBossinessManId;
+    private String soldBossinessManName;
     private List<ItemDetails> itemDetails;
     private String lotStatus;
 

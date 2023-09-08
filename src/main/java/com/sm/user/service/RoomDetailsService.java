@@ -44,7 +44,7 @@ private CommonService commonService;
             IntStream.range(0, roomDetails.getFloorInRoom()).forEach(row -> {
 //col loop
                 IntStream.range(0, roomDetails.getColumnInRoom()).forEach(col -> {
-                    String lotName = "R-" + roomDetails.getRoomNo() + "-F-" + row + "-C-" + col + "-S-" + store.getRegistrationSessionYear() + "-S-" + store.getStoreName();
+                    String lotName = "R" + roomDetails.getRoomNo() + "F" + row + "C" + col + "S" + store.getRegistrationSessionYear() + "S" + store.getStoreName();
                     RoomLotDetails roomLotDetails = new RoomLotDetails();
                     roomLotDetails.setFloorNo(row);
                     roomLotDetails.setColumnNo(col);
@@ -65,6 +65,15 @@ private CommonService commonService;
 
     public void deleteLots(String storeId){
         roomLotDetailsRepository.deleteByStoreId(storeId);
+    }
+
+    public  List<AvailableRooms> getAllRooms(String storeId, String sessionYear){
+        List<RoomLotDetails> roomLotDetails = roomLotDetailsRepository.findAllByStoreIdAndSession(storeId, sessionYear);
+        if(CollectionUtils.isEmpty(roomLotDetails)){
+            return new ArrayList<>();
+        }
+        return  roomTransformer.convertLotDetailsResponse(roomLotDetails);
+
     }
 
     public  List<AvailableRooms> getAvailableRooms(String storeId, String sessionYear){

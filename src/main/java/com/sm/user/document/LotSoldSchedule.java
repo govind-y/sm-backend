@@ -19,11 +19,15 @@ public class LotSoldSchedule extends AuditDocument {
     private String lotNo;
     private Long soldQuantity;
     private Double price;
-    private String soldStatus; // IN_PROGRESS, WEIGHT_DONE, PAYMENT_SETTLED, REJECT,
+    private String soldStatus; // IN_PROGRESS, WEIGHT_DONE, PAYMENT_SETTLED, REJECT,PAID,
     private String soldType;//full, partial
     private LocalDate soldDate;
     private LocalDate weightDate;
     private LocalDate paymentDate;
+    private Double totalAmount;
+    private Double paidAmount;
+    private Double storeCharge;
+    private Double weightCharge;
 
 
 

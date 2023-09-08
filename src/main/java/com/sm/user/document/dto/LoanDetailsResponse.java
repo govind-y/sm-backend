@@ -2,15 +2,21 @@ package com.sm.user.document.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class LoanDetailsResponse {
 
     private Long id;
-    private String loanType;
-    private long customerId;
-    private String customerName;
-    private Long rateOfInterest;
+    private Long customerId;
     private String storeId;
+    private String session;
+    private String loanType;
     private Double amount;
+    private Double rateOfInterest;
+    private String transactionType;
+    private Integer countOfPackets;
+    private String transactionDate;
+    private String customerName;
 
 }

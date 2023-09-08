@@ -21,6 +21,7 @@ public class Items {
     @ManyToOne
     @JoinColumn(name = "product_in_id")
     private ProductIn productIn;
+    private Long lotScheduleId;
 
 
 }

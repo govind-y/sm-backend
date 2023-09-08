@@ -33,6 +33,9 @@ public class CustomerLoanDetailsController {
     private CustomerLoanRepository customerLoanRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    CommonService commonService;
+
 
     @PostMapping("/customerloan")
     public ResponseEntity<?> save(@RequestBody LoanDetailRequest loanDetailRequest) {
@@ -43,6 +46,15 @@ public class CustomerLoanDetailsController {
     @GetMapping("/customerloan/storeId/{storeId}")
     public ResponseEntity<?> FindAll(@PathVariable String storeId) {
         List<CustomerLoan> customerLoans = customerLoanRepository.findAllByStoreId(storeId);
+        if (!CollectionUtils.isEmpty(customerLoans)) {
+            return ResponseEntity.ok(customerLoans.stream().map(this::convertToResponse).collect(Collectors.toList()));
+        }
+        return ResponseEntity.ok(new ArrayList<>());
+    }
+
+    @GetMapping("/customerloan/customer/{customerId}")
+    public ResponseEntity<?> FindAllByCustomerId(@PathVariable("customerId") Long customerId) {
+        List<CustomerLoan> customerLoans = customerLoanRepository.findAllByCustomerId(customerId);
         if (!CollectionUtils.isEmpty(customerLoans)) {
             return ResponseEntity.ok(customerLoans.stream().map(this::convertToResponse).collect(Collectors.toList()));
         }
@@ -60,18 +72,15 @@ public class CustomerLoanDetailsController {
     }
 
     private CustomerLoan convertToEntity(LoanDetailRequest loanDetailRequest) {
-        CustomerLoan loan = new CustomerLoan();
-        loan.setAmount(loanDetailRequest.getAmount());
-        loan.setCustomerId(loanDetailRequest.getCustomerId());
-        loan.setLoanType(loanDetailRequest.getLoanType());
-        loan.setSession(CommonUtils.getCurrentSessionYear());
-        loan.setStoreId(loanDetailRequest.getStoreId());
-        loan.setTransactionDate(LocalDateTime.now());
+
+        CustomerLoan entity = new DozerBeanMapper().map(loanDetailRequest, CustomerLoan.class);
+        entity.setTransactionDate(LocalDateTime.now());
         if (loanDetailRequest.getId() == null) {
-            loan.setCreatedDateTimeStamp(LocalDateTime.now());
+            entity.setCreatedDateTimeStamp(LocalDateTime.now());
         }
-        loan.setId(loanDetailRequest.getId());
-        loan.setTransactionType("DEBIT");
-        return loan;
+        entity.setSession(commonService.getCurrentSession());
+        entity.setId(loanDetailRequest.getId());
+        entity.setTransactionType("DEBIT");
+        return entity;
     }
 }
