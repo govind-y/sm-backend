@@ -13,7 +13,7 @@ public abstract class AuditDocument implements Serializable {
 
     private String updatedBy;
 
-    private LocalDateTime createdDateTimeStamp;
+    private LocalDateTime createdDateTimeStamp= LocalDateTime.now();
 
     private LocalDateTime updatedTimeStamp=LocalDateTime.now();
 }

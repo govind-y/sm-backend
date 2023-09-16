@@ -46,34 +46,39 @@ public class ProductInController {
     @Async
     @Transactional
     public ResponseEntity<?> create(@RequestBody ProductIn productIn) {
-        if (productIn.getProductInDate() == null) {
-            productIn.setProductInDate(LocalDate.now());
-        }
-        RoomLotDetails roomLotDetails = commonService.getAvailableLotDetails(productIn.getLotNo());
-        Integer currentLotCapacity = roomLotDetails.getCurrentLotCapacity() - Integer.parseInt(productIn.getQuantity());
-        if (ObjectUtils.isEmpty(roomLotDetails) && currentLotCapacity>0) {
-            throw new BadRequestException("Lot capacity already occupied");
-        }
-        productIn.setCreatedDateTimeStamp(LocalDateTime.now());
-        productIn.setUpdatedTimeStamp(LocalDateTime.now());
+        try {
+            if (productIn.getProductInDate() == null) {
+                productIn.setProductInDate(LocalDate.now());
+            }
+            RoomLotDetails roomLotDetails = commonService.getAvailableLotDetails(productIn.getLotNo());
+            Integer currentLotCapacity = roomLotDetails.getCurrentLotCapacity() - Integer.parseInt(productIn.getQuantity());
+            if (ObjectUtils.isEmpty(roomLotDetails) && currentLotCapacity>0) {
+                throw new BadRequestException("Lot capacity already occupied");
+            }
+            productIn.setCreatedDateTimeStamp(LocalDateTime.now());
+            productIn.setUpdatedTimeStamp(LocalDateTime.now());
 
-        Integer i = Integer.parseInt(productIn.getQuantity());
-        List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
-            Items item = new Items();
-            item.setItemNo(intValue);
-            Product product = new Product();
-            product.setId(productIn.getProductId());
-            item.setProduct(product);
-            item.setLotNo(productIn.getLotNo());
-            item.setProductIn(productIn);
-            return item;
-        }).collect(Collectors.toList());
-        productIn.setItems(items);
-        productInRepository.save(productIn);
+            Integer i = Integer.parseInt(productIn.getQuantity());
+            List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
+                Items item = new Items();
+                item.setItemNo(intValue);
+                Product product = new Product();
+                product.setId(productIn.getProductId());
+                item.setProduct(product);
+                item.setLotNo(productIn.getLotNo());
+                item.setProductIn(productIn);
+                return item;
+            }).collect(Collectors.toList());
+            productIn.setItems(items);
+            productInRepository.save(productIn);
 //        itemsRepository.saveAll(items);
 
-        roomLotDetailsRepository.updateCustomerNo(productIn.getLotNo(),currentLotCapacity,String.valueOf(productIn.getCustomerId()));
-        return ResponseEntity.ok("Product in successfully !");
+            roomLotDetailsRepository.updateCustomerNo(String.valueOf(productIn.getCustomerId()),currentLotCapacity,productIn.getLotNo());
+            return ResponseEntity.ok("Product in successfully !");
+        }catch (Exception e){
+            throw e;
+        }
+
     }
 
     @GetMapping("/productIn/lookup")

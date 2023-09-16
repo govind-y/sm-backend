@@ -48,7 +48,7 @@ public class ProductOutController {
     @Transactional
     public ResponseEntity<Response> save(@RequestBody ProductOutRequest productOutRequest){
         ProductOut productOut=new ProductOut();
-        if(CollectionUtils.isEmpty(productOutRequest.getItemIds())){
+        if(CollectionUtils.isEmpty(productOutRequest.getItemIds()) || productOutRequest.getSoldBusinessManId()==null){
             throw new BadRequestException("Please add item details !");
         }
         Optional<LotSoldSchedule> soldSchedule;

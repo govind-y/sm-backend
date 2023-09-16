@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.math.RoundingMode;
 import java.util.List;
 
 public interface RoomLotDetailsRepository extends JpaRepository<RoomLotDetails,Long> {
@@ -16,8 +15,8 @@ public interface RoomLotDetailsRepository extends JpaRepository<RoomLotDetails,L
 
     void deleteByStoreId(String storeId);
     @Modifying
-    @Query(value = "update room_lot_details set allocated_customer=:customerNo current_lot_capacity=:currentLotCapacity where generated_lot_name= :lotNo", nativeQuery = true)
-    int updateCustomerNo(String lotNo, Integer currentLotCapacity, String customerNo);
+    @Query(value = "update room_lot_details set allocated_customer=:customerNo ,current_lot_capacity=:currentLotCapacity where generated_lot_name= :lotNo", nativeQuery = true)
+    int updateCustomerNo(String customerNo, Integer currentLotCapacity, String lotNo);
 
 
  }

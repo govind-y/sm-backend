@@ -60,6 +60,7 @@ private RegistrationSubscriptionRepository subscriptionRepository;
       if(ObjectUtils.isEmpty(store1)) {
           store.setCreatedDateTimeStamp(LocalDateTime.now());
           store.setUpdatedTimeStamp(LocalDateTime.now());
+          store.setRegistrationDate(LocalDateTime.now());
        //   store.getRoomDetails().stream().forEach(item->item.setStore(store));
           Store store2 = storeRepository.save(store);
           roomDetailsService.generateRoomLots(store.getStoreId());

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,6 +35,7 @@ public class Store extends AuditDocument {
     @NonNull
     private String registrationKey;
     private Long perItemCharge;
+    private LocalDateTime registrationDate;
     @NonNull
     private String area;
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
