@@ -36,39 +36,41 @@ public class DashboardService {
 
 
 
-    public DashboardCountResponse getDashboardCount(String sessionYear) {
-        Tuple ss = customerRepository.getCountOfDashboardData(sessionYear);
-        DashboardCountResponse countResponse = new DashboardCountResponse(
-                ss.get(0, BigInteger.class),
-                ss.get(1, Double.class),
-                ss.get(2, Double.class),
-                ss.get(3, Double.class)
-        );
-        return countResponse;
+    public DashboardCountResponse getDashboardCount(String sessionYear, String storeId) {
+        Tuple tuple = customerRepository.getCountOfDashboardData(sessionYear,storeId);
+        if(tuple!=null){
+            return new DashboardCountResponse(
+                    tuple.get(0, BigInteger.class),
+                    tuple.get(1, Double.class),
+                    tuple.get(2, Double.class),
+                    tuple.get(3, Double.class)
+            );
+        }
+       return null;
 
     }
 
-    public Double getProductInDetailByBrandType(String brandType) {
+    public Double getProductInDetailByBrandType(String brandType, String storeId) {
 
-        return customerRepository.totalAvailableQualityProductIn(brandType);
-
-    }
-
-    public Double getProductOutDetailByBrandType(String brandType) {
-
-        return customerRepository.totalAvailableQualityProductOut(brandType);
+        return customerRepository.totalAvailableQualityProductIn(brandType,storeId);
 
     }
 
-    public Double getProductInDetailByRoomNo(String roomNo) {
+    public Double getProductOutDetailByBrandType(String brandType, String storeId) {
 
-        return customerRepository.totalAvailableQualityProductInByRoom(roomNo);
+        return customerRepository.totalAvailableQualityProductOut(brandType,storeId);
 
     }
 
-    public Double getProductOutDetailByRoomNo(String roomNO) {
+    public Double getProductInDetailByRoomNo(String roomNo, String storeId) {
 
-        return customerRepository.totalAvailableQualityProductOutByRoom(roomNO);
+        return customerRepository.totalAvailableQualityProductInByRoom(roomNo,storeId);
+
+    }
+
+    public Double getProductOutDetailByRoomNo(String roomNO, String storeId) {
+
+        return customerRepository.totalAvailableQualityProductOutByRoom(roomNO,storeId);
 
     }
 

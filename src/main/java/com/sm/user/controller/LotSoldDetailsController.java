@@ -46,7 +46,7 @@ public class LotSoldDetailsController {
 
         Double totalInQuanity = productIns.stream().mapToDouble(prodcutin -> Double.parseDouble(prodcutin.getQuantity())).sum();
         Double totalSoldQuanity = soldSchedules.stream().filter(item->!item.getSoldStatus().equalsIgnoreCase("CANCELLED") && item.getSoldQuantity()!=null).mapToDouble(prodcutin -> prodcutin.getSoldQuantity()).sum();
-      if((totalInQuanity-soldScheduleRequest.getSoldQuantity())<totalSoldQuanity){
+      if(!((totalInQuanity-soldScheduleRequest.getSoldQuantity())<totalSoldQuanity)){
           throw new BadRequestException("Item already sold or selling items are more then available quantity! ");
       }
         LotSoldSchedule entity = new DozerBeanMapper().map(soldScheduleRequest, LotSoldSchedule.class);
