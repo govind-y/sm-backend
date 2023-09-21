@@ -21,7 +21,7 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
         "               ( select sum(cl.amount) from customer_loan cl where cl.session=:sessionYear and cl.store_id=:storeId) as loan_amount,\n" +
         "               (select sum(po.quantity) from product_out po where po.session=:sessionYear  and po.store_id=:storeId) as total_product_out,\n" +
         "               (select sum(pin.quantity) from product_in pin  where pin.session=:sessionYear and pin.store_id=:storeId) as total_product_in\n" +
-        "               from product_in pr  where pr.session=:sessionYear and pr.store_id= :storeId limit 1 " ,nativeQuery = true)
+        "               from product_in pr  where pr.session=:sessionYear limit 1 " ,nativeQuery = true)
 Tuple getCountOfDashboardData(String sessionYear, String storeId);
 
 @Query(value = "select sum(pi.quantity) from product_in pi inner  join product p on p.id= pi.product_id where p.product_type=:brandType and pi.store_id=:storeId", nativeQuery = true)
