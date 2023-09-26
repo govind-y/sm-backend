@@ -6,6 +6,7 @@ import com.sm.user.document.dto.LotDetails;
 import com.sm.user.document.dto.ProductDetails;
 import com.sm.user.repository.*;
 import com.sm.user.service.CommonService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -24,7 +25,7 @@ import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api")
-
+@Slf4j
 @CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 public class ProductInController {
     @Autowired
@@ -72,7 +73,7 @@ public class ProductInController {
             productIn.setItems(items);
             productInRepository.save(productIn);
 //        itemsRepository.saveAll(items);
-
+          log.info("Current room capacity {} for lot no {} and customer {} ",currentLotCapacity, productIn.getLotNo(),productIn.getCustomerId());
             roomLotDetailsRepository.updateCustomerNo(String.valueOf(productIn.getCustomerId()),currentLotCapacity,productIn.getLotNo());
             return ResponseEntity.ok("Product in successfully !");
         }catch (Exception e){

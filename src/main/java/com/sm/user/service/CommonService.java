@@ -60,7 +60,7 @@ public class CommonService {
 
         Optional<? extends GrantedAuthority> authority = authorities.stream().filter(dd -> dd.getAuthority().contains(key)).findFirst();
         if(authority.isPresent()){
-           return authority.get().getAuthority().split(":")[1];
+           return authority.get().getAuthority().split(":")[1].trim();
         }
         return null;
     }

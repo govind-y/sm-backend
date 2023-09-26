@@ -11,6 +11,7 @@ import com.sm.user.repository.CustomerLoanRepository;
 import com.sm.user.repository.CustomerRepository;
 import com.sm.user.repository.ItemsRepository;
 import com.sm.user.repository.ProductInRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class DashboardService {
     @Autowired
     private CustomerRepository customerRepository;
@@ -37,6 +39,8 @@ public class DashboardService {
 
 
     public DashboardCountResponse getDashboardCount(String sessionYear, String storeId) {
+        log.info("Filter by values {}, {}",sessionYear,storeId);
+//        storeId="'"+storeId.trim()+"'";
         Tuple tuple = customerRepository.getCountOfDashboardData(sessionYear,storeId);
         if(tuple!=null){
             return new DashboardCountResponse(

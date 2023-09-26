@@ -4,10 +4,12 @@ import com.sm.user.document.Customer;
 import com.sm.user.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @PostMapping("/customer")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
@@ -50,6 +54,15 @@ public class CustomerController {
     public ResponseEntity<Customer> getCustomerByPhoneOrCustomer(@PathVariable("phone") String phone) {
 
         return ResponseEntity.ok(customerRepository.findByPhone(phone));
+    }
+
+    @GetMapping("/customer/dynamicSearch/{searchParam}")
+    public ResponseEntity<List<Customer>> getCustomerBySearch(@PathVariable("searchParam") String searchParam) {
+String query= "select * from customer c where  c.store_id='c270d0b3-0069-40a5-9a9a-8b847195d166' and ( c.first_name like '%govind%' or c.last_name sounds like '%govind%'  or c.phone like '%7842%')";
+
+        List<Customer> customers = jdbcTemplate.queryForList(query, Customer.class);
+
+        return ResponseEntity.ok(customers);
     }
 
 }
