@@ -2,9 +2,12 @@ package com.sm.user.controller;
 
 import com.sm.user.document.Customer;
 import com.sm.user.repository.CustomerRepository;
+import com.sm.user.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +23,12 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private CommonService commonService;
+
+
+
 
     @PostMapping("/customer")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
@@ -55,12 +62,16 @@ public class CustomerController {
 
         return ResponseEntity.ok(customerRepository.findByPhone(phone));
     }
-
+//    @SecurityRequirement(name = "bearer-jwt")
     @GetMapping("/customer/dynamicSearch/{searchParam}")
     public ResponseEntity<List<Customer>> getCustomerBySearch(@PathVariable("searchParam") String searchParam) {
-String query= "select * from customer c where  c.store_id='c270d0b3-0069-40a5-9a9a-8b847195d166' and ( c.first_name like '%govind%' or c.last_name sounds like '%govind%'  or c.phone like '%7842%')";
+        String storeId = commonService.getAuthKey("storeId");
+       if(storeId==null){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+       }
+//        String query= "select * from customer c where  c.store_id='c270d0b3-0069-40a5-9a9a-8b847195d166' and ( c.first_name like '%govind%' or c.last_name sounds like '%govind%'  or c.phone like '%7842%')";
 
-        List<Customer> customers = jdbcTemplate.queryForList(query, Customer.class);
+        List<Customer> customers = customerRepository.findAllByStoreIdAndCustomerSearch(storeId,"%"+searchParam+"%");
 
         return ResponseEntity.ok(customers);
     }

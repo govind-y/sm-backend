@@ -6,6 +6,7 @@ import com.sm.user.service.CommonService;
 import com.sm.user.service.DashboardService;
 import com.sm.user.token.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,18 +31,24 @@ public class DashboardController {
 
 @GetMapping("/dashboardCount/session/{sessionYear}")
     public ResponseEntity<?> dashboardCount(@PathVariable("sessionYear") String sessionYear){
-
-    return ResponseEntity.ok(dashboardService.getDashboardCount(sessionYear,commonService.getAuthKey("storeId")));
+    String storeId = commonService.getAuthKey("storeId");
+    if(storeId==null){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    return ResponseEntity.ok(dashboardService.getDashboardCount(sessionYear,storeId));
 }
 
 
 @GetMapping("/productInCount/identifierType/{identifierType}/identifier/{identifier}")
     public ResponseEntity<ResponseData> getProductInCountBasedOnIdentifier(@PathVariable("identifierType") String identifierType, @PathVariable("identifier") String identifier){
-
+    String storeId = commonService.getAuthKey("storeId");
+    if(storeId==null){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
    if(identifierType.equalsIgnoreCase("brand")){
-       return ResponseEntity.ok(new ResponseData(dashboardService.getProductInDetailByBrandType(identifier,commonService.getAuthKey("storeId"))));
+       return ResponseEntity.ok(new ResponseData(dashboardService.getProductInDetailByBrandType(identifier,storeId)));
    }else if(identifierType.equalsIgnoreCase("room")){
-       return ResponseEntity.ok(new ResponseData(dashboardService.getProductInDetailByRoomNo(identifier,commonService.getAuthKey("storeId"))));
+       return ResponseEntity.ok(new ResponseData(dashboardService.getProductInDetailByRoomNo(identifier,storeId)));
    }else{
        return ResponseEntity.badRequest().eTag("No identifier matched").build();
    }
@@ -50,11 +57,14 @@ public class DashboardController {
 
     @GetMapping("/productOutCount/identifierType/{identifierType}/identifier/{identifier}")
     public ResponseEntity<ResponseData> getProductOutCountBasedOnIdentifier(@PathVariable("identifierType") String identifierType, @PathVariable("identifier") String identifier){
-
+        String storeId = commonService.getAuthKey("storeId");
+        if(storeId==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         if(identifierType.equalsIgnoreCase("brand")){
-            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByBrandType(identifier,commonService.getAuthKey("storeId"))));
+            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByBrandType(identifier,storeId)));
         }else if(identifierType.equalsIgnoreCase("room")){
-            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByRoomNo(identifier,commonService.getAuthKey("storeId"))));
+            return ResponseEntity.ok(new ResponseData(dashboardService.getProductOutDetailByRoomNo(identifier,storeId)));
         }else{
             return ResponseEntity.badRequest().eTag("No identifier matched").build();
         }

@@ -17,7 +17,8 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
    List<Customer> findAllByStoreIdAndRoleType(String storeId, String roleType);
    Optional<Customer> findById(Long id);
 
-//   List<Customer> findAllByStoreIdLikeOrFirstNameLikeAndLastNameLike(String searchParam);
+   @Query(nativeQuery = true, value = "select * from customer c where  c.store_id=:storeId and ( c.first_name sounds like :searchParam or c.last_name  sounds like :searchParam  or c.phone like :searchParam)")
+   List<Customer> findAllByStoreIdAndCustomerSearch(@Param("storeId") String storeId,@Param("searchParam")  String searchParam);
 
 
 @Query(value = "select (select count(c.id) from customer c where c.register_session=:sessionYear and c.store_id= :storeId ) as customer_count, \n" +
@@ -27,12 +28,12 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
         "                       from product_in pr  where pr.session=:sessionYear limit 1" ,nativeQuery = true)
 Tuple getCountOfDashboardData(@Param("sessionYear") String sessionYear, @Param("storeId") String storeId);
 
-@Query(value = "select sum(pi.quantity) from product_in pi inner  join product p on p.id= pi.product_id where p.product_type=:brandType and pi.store_id=:storeId", nativeQuery = true)
-Double totalAvailableQualityProductIn(@Param("brandType") String brandType, @Param("storeId") String storeId);
+@Query(value = "select sum(pi.quantity) from product_in pi where p.product_id=:prodcutId and pi.store_id=:storeId", nativeQuery = true)
+Double totalAvailableQualityProductIn(@Param("prodcutId") String prodcutId, @Param("storeId") String storeId);
 
 
-   @Query(value = "select sum(po.quantity) from product_out po inner  join product p on p.id= po.product_id where p.product_type=:brandType and po.store_id=:storeId ", nativeQuery = true)
-   Double totalAvailableQualityProductOut(String brandType, String storeId);
+   @Query(value = "select sum(po.quantity) from product_out po   where po.product_id=:prodcutId and po.store_id=:storeId ", nativeQuery = true)
+   Double totalAvailableQualityProductOut(String prodcutId, String storeId);
 
    @Query(value = "select sum(po.quantity) from product_out po  inner  join room_lot_details rld on po.lot_no = rld.generated_lot_name where rld.room_no= :roomNo and  rld.store_id=:storeId ", nativeQuery = true)
    Double totalAvailableQualityProductOutByRoom(String roomNo, String storeId);

@@ -58,7 +58,7 @@ public class ProductInController {
             }
             productIn.setCreatedDateTimeStamp(LocalDateTime.now());
             productIn.setUpdatedTimeStamp(LocalDateTime.now());
-
+            productIn.setSession(commonService.getCurrentSession());
             Integer i = Integer.parseInt(productIn.getQuantity());
             List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
                 Items item = new Items();
