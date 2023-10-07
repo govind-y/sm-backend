@@ -28,7 +28,7 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
         "                       from product_in pr  where pr.session=:sessionYear limit 1" ,nativeQuery = true)
 Tuple getCountOfDashboardData(@Param("sessionYear") String sessionYear, @Param("storeId") String storeId);
 
-@Query(value = "select sum(pi.quantity) from product_in pi where p.product_id=:prodcutId and pi.store_id=:storeId", nativeQuery = true)
+@Query(value = "select sum(pi.quantity) from product_in pi where pi.product_id=:prodcutId and pi.store_id=:storeId", nativeQuery = true)
 Double totalAvailableQualityProductIn(@Param("prodcutId") String prodcutId, @Param("storeId") String storeId);
 
 
