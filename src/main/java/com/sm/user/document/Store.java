@@ -4,6 +4,7 @@ import com.sm.user.document.extention.AuditDocument;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class Store extends AuditDocument {
     private Long id;
     @NonNull
     private String storeName;
-
+    @Unique
     private String storeId;
     @NonNull
     private String phone;

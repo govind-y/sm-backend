@@ -28,6 +28,10 @@ public class LotSoldSchedule extends AuditDocument {
     private Double paidAmount;
     private Double storeCharge;
     private Double weightCharge;
+    @Transient
+    private String customerName;
+    @Transient
+    private String supplierName;
 
 
 

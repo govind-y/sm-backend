@@ -1,7 +1,10 @@
 package com.sm.user.controller;
 
 import com.sm.user.document.Customer;
+import com.sm.user.document.Store;
+import com.sm.user.document.dto.Response;
 import com.sm.user.repository.CustomerRepository;
+import com.sm.user.repository.StoreRepository;
 import com.sm.user.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -23,12 +27,31 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private StoreRepository storeRepository;
 
     @Autowired
     private CommonService commonService;
 
 
+    @PutMapping("/customermap/store/{storeId}/customerId/{customerId}")
+    public ResponseEntity<Response> createCustomer(@PathVariable("storeId") String storeId, @PathVariable("customerId") Long customerId) {
 
+
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (customer.isPresent()) {
+            if(StringUtils.isEmpty(customer.get().getStoreId())){
+                customer.get().setStoreId(storeId);
+                customerRepository.save(customer.get());
+                return ResponseEntity.ok(new Response(customer.get().getFirstName(),"Success"));
+            }else {
+                Store store = storeRepository.findByStoreId(storeId);
+                return ResponseEntity.badRequest().eTag("Customer already linked with "+store.getStoreName()+" store please try to register different phoneNo. this "+customer.get().getPhone()+" phoneNo is not valid").build();
+            }
+
+        }
+        return ResponseEntity.unprocessableEntity().build();
+    }
 
     @PostMapping("/customer")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
@@ -45,7 +68,6 @@ public class CustomerController {
         customer.setId(customer1.getId());
         customer.setPhone(customer1.getPhone());
         customer.setUpdatedTimeStamp(LocalDateTime.now());
-        customer.setCustomerNumber(customer1.getCustomerNumber());
         return ResponseEntity.ok(customerRepository.save(customer));
     }
 

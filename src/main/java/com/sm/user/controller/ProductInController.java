@@ -84,10 +84,11 @@ public class ProductInController {
 
     @GetMapping("/productIn/lookup")
     public ResponseEntity<List<ProductDetails>> getProductDetailsByLotNo(@RequestParam(required = false) String lotNo
-            , @RequestParam(required = true) String storeId, @RequestParam(required = false) String roomId) {
+            , @RequestParam(required = true) String storeId, @RequestParam(required = false) String roomId,@RequestParam(required = false) Long customerId) {
         List<ProductIn> productIns = new ArrayList<>();
-
-        if (!StringUtils.isEmpty(lotNo)) {
+        if(customerId!=null){
+            productIns = productInRepository.findAllByStoreIdAndCustomerId(storeId, customerId);
+        } else if (!StringUtils.isEmpty(lotNo)) {
             productIns = productInRepository.findAllByStoreIdAndLotNo(storeId, lotNo);
         } else if (!StringUtils.isEmpty(roomId)) {
             productIns = productInRepository.findAllByStoreIdAndRoomNo(storeId, roomId);
@@ -97,6 +98,7 @@ public class ProductInController {
 
         return ResponseEntity.ok(convertProductDetails(productIns));
     }
+
 
 
     private List<ProductDetails> convertProductDetails(List<ProductIn> productIns) {

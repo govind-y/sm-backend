@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface StoreRepository extends JpaRepository<Store,Long> {
 
     Store findByStoreIdOrPhone(String storeId, String phone);
+    Store  findByStoreId(String storeId);
 }
