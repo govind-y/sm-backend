@@ -20,6 +20,7 @@ import javax.ws.rs.BadRequestException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -71,7 +72,15 @@ public class ProductInController {
                 return item;
             }).collect(Collectors.toList());
             productIn.setItems(items);
-            productInRepository.save(productIn);
+            try {
+                CompletableFuture.runAsync(() -> productInRepository.save(productIn));
+            }catch (Exception e){
+                log.error("Exception occured while adding the product details "+e.getMessage());
+
+            }
+
+
+
 //        itemsRepository.saveAll(items);
           log.info("Current room capacity {} for lot no {} and customer {} ",currentLotCapacity, productIn.getLotNo(),productIn.getCustomerId());
             roomLotDetailsRepository.updateCustomerNo(String.valueOf(productIn.getCustomerId()),currentLotCapacity,productIn.getLotNo());

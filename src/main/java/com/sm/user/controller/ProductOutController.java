@@ -48,6 +48,8 @@ public class ProductOutController {
     @Transactional
     public ResponseEntity<Response> save(@RequestBody ProductOutRequest productOutRequest){
         ProductOut productOut=new ProductOut();
+        List<LotSoldSchedule> schedules = soldScheduleRepository.findByLotNo(productOutRequest.getLotNo());
+
         if(CollectionUtils.isEmpty(productOutRequest.getItemIds()) || productOutRequest.getSoldBusinessManId()==null){
             throw new BadRequestException("Please add item details !");
         }
@@ -86,7 +88,6 @@ public class ProductOutController {
         productOut.setLotNo(productOutRequest.getLotNo());
         productOut.setQuantity(productOutRequest.getQuantity());
         productOut.setReasonOfOut(productOutRequest.getReasonOfOut());
-
         productOut.setSoldBussinessManId(productOutRequest.getSoldBusinessManId());
         productOut.setStoreId(productOutRequest.getStoreId());
         ProductOut productOut1 = productOutRepository.save(productOut);

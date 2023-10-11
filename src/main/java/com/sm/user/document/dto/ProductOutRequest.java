@@ -12,11 +12,11 @@ public class ProductOutRequest {
     private String lotNo;
     @NotNull
     private String quantity;
-    @NotNull
+
     private String reasonOfOut;
     @NotNull
     private Long  customerId;
-    @NotNull
+
     private Long  soldBusinessManId;
     @NotNull
     private String storeId;

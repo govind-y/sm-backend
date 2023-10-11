@@ -22,4 +22,5 @@ public class RoomDetails implements Serializable {
     @ManyToOne
     @JoinColumn(name = "store_pk_id")
     private Store store;
+    private String storeId;
 }

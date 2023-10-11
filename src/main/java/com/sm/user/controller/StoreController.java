@@ -22,90 +22,90 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 
-@CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class StoreController {
-@Autowired
+    @Autowired
     private StoreRepository storeRepository;
     @Autowired
     private CustomerRepository customerRepository;
-@Autowired
-private RegistrationSubscriptionRepository subscriptionRepository;
-@Autowired
+    @Autowired
+    private RegistrationSubscriptionRepository subscriptionRepository;
+    @Autowired
     OtpService otpService;
-@Autowired
+    @Autowired
     RoomDetailsService roomDetailsService;
 
     @PostMapping("/open/store")
-    public ResponseEntity<Store> create(@RequestBody Store store){
+    public ResponseEntity<Store> create(@RequestBody Store store) {
         RegistrationSubscription subscription = subscriptionRepository.findByStoreKey(store.getRegistrationKey());
-        if( !(subscription!=null && store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equalsIgnoreCase("ACTIVE"))){
+        if (!(subscription != null && store.getRegistrationKey().equals(subscription.getStoreKey()) && subscription.getStatus().equalsIgnoreCase("ACTIVE"))) {
             return ResponseEntity.badRequest().eTag("Failed due to invalid key").build();
         }
-        if(store.getRegistrationSessionYear()==null){
+        if (store.getRegistrationSessionYear() == null) {
             store.setRegistrationSessionYear(CommonUtils.getCurrentSessionYear());
         }
-        if(StringUtils.isEmpty(store.getStoreId())){
+        if (StringUtils.isEmpty(store.getStoreId())) {
             store.setStoreId(UUID.randomUUID().toString());
         }
-        store.getRoomDetails().stream().forEach(room->{
-            if(StringUtils.isEmpty(room.getRoomId())){
+        store.getRoomDetails().stream().forEach(room -> {
+            if (StringUtils.isEmpty(room.getRoomId())) {
                 room.setRoomId(CommonUtils.generateUUID());
+                room.setStoreId(store.getStoreId());
             }
         });
 
 
-        Store store1= storeRepository.findByStoreIdOrPhone(store.getStoreId(),store.getPhone());
-      if(ObjectUtils.isEmpty(store1)) {
-          store.setCreatedDateTimeStamp(LocalDateTime.now());
-          store.setUpdatedTimeStamp(LocalDateTime.now());
-          store.setRegistrationDate(LocalDateTime.now());
-       //   store.getRoomDetails().stream().forEach(item->item.setStore(store));
-          Store store2 = storeRepository.save(store);
-          roomDetailsService.generateRoomLots(store.getStoreId());
-         return ResponseEntity.ok(store2);
-      }
+        Store store1 = storeRepository.findByStoreIdOrPhone(store.getStoreId(), store.getPhone());
+        if (ObjectUtils.isEmpty(store1)) {
+            store.setCreatedDateTimeStamp(LocalDateTime.now());
+            store.setUpdatedTimeStamp(LocalDateTime.now());
+            store.setRegistrationDate(LocalDateTime.now());
+            Store store2 = storeRepository.save(store);
+            roomDetailsService.generateRoomLots(store.getStoreId());
+            return ResponseEntity.ok(store2);
+        }
 
-      store.setId(store1.getId());
+        store.setId(store1.getId());
         store.setStoreId(store1.getStoreId());
         store.setPhone(store1.getPhone());
         store.setUpdatedTimeStamp(LocalDateTime.now());
-        Integer roomBefore=store1.getNoOfRooms();
+        Integer roomBefore = store1.getNoOfRooms();
         Store store2 = storeRepository.save(store);
-        if(roomBefore!=store2.getNoOfRooms()){
+        if (roomBefore != store2.getNoOfRooms()) {
             roomDetailsService.deleteLots(store.getStoreId());
             roomDetailsService.generateRoomLots(store1.getStoreId());
         }
 
-        return  ResponseEntity.ok(store2);
+        return ResponseEntity.ok(store2);
     }
 
 
     @GetMapping("/allstore")
-    public ResponseEntity<List<Store>> stores(){
+    public ResponseEntity<List<Store>> stores() {
         return ResponseEntity.ok(new ArrayList<>(storeRepository.findAll()));
     }
 
-    @CrossOrigin(origins = "*",exposedHeaders = "*",allowedHeaders = "*")
+    @CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
     @GetMapping("/dd/hello")
-    public ResponseEntity<String> hello(){
+    public ResponseEntity<String> hello() {
         return ResponseEntity.ok("Hello working");
     }
 
     @GetMapping("/open/generateOtp")
-    public ResponseEntity<String> generateOtp(@RequestParam String mob){
+    public ResponseEntity<String> generateOtp(@RequestParam String mob) {
         Store store = storeRepository.findByStoreIdOrPhone(mob, mob);
-        Customer customer=null;
-        if(ObjectUtils.isEmpty(store)){
-              customer = customerRepository.findByPhone(mob);
-        }else if(customer==null && store==null){
-            return ResponseEntity.badRequest().body("Mob is not registered with the system !"+mob);
+        Customer customer = null;
+        if (ObjectUtils.isEmpty(store)) {
+            customer = customerRepository.findByPhone(mob);
+        } else if (customer == null && store == null) {
+            return ResponseEntity.badRequest().body("Mob is not registered with the system !" + mob);
         }
 
 
         int otp = otpService.generateOTP(mob);
-        return ResponseEntity.ok("Generated Otp : "+otp);
+        return ResponseEntity.ok("Generated Otp : " + otp);
     }
 
 
