@@ -32,8 +32,8 @@ public class ProductIn extends AuditDocument {
             @NotNull
             private String storeId;
             private LocalDate productInDate;
-            @OneToMany(mappedBy = "productIn", cascade = CascadeType.ALL, orphanRemoval = true)
-            private List<Items> items;
+//            @OneToMany(mappedBy = "productIn", cascade = CascadeType.ALL, orphanRemoval = true)
+//            private List<Items> items;
 
 
 

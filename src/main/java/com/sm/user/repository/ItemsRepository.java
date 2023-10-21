@@ -16,6 +16,8 @@ public interface ItemsRepository extends JpaRepository<Items,Long> {
 
 
     List<Items> findAllByLotScheduleId(Long lotScheduleId);
+    Long countByLotScheduleId(Long lotscheduleId);
+    List<Items> findAllByLotNo(String lotNo);
 
 
     //    @Query(value = "select i from Items i where i.productIn.id=:productInId and i.productOutId is not null ")

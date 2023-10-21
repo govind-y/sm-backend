@@ -20,6 +20,7 @@ public class ProductOutRequest {
     private Long  soldBusinessManId;
     @NotNull
     private String storeId;
+    private Long soldScheduleId;
     @NotNull
     private List<ItemDetailsRequest> itemIds;
 

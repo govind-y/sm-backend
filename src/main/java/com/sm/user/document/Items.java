@@ -18,9 +18,9 @@ public class Items {
     private Product product;
 
     private Long productOutId;
-    @ManyToOne
-    @JoinColumn(name = "product_in_id")
-    private ProductIn productIn;
+//    @ManyToOne
+//    @JoinColumn(name = "product_in_id")
+    private Long productInId;
     private Long lotScheduleId;
 
 

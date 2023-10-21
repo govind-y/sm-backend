@@ -60,26 +60,15 @@ public class ProductInController {
             productIn.setCreatedDateTimeStamp(LocalDateTime.now());
             productIn.setUpdatedTimeStamp(LocalDateTime.now());
             productIn.setSession(commonService.getCurrentSession());
-            Integer i = Integer.parseInt(productIn.getQuantity());
-            List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
-                Items item = new Items();
-                item.setItemNo(intValue);
-                Product product = new Product();
-                product.setId(productIn.getProductId());
-                item.setProduct(product);
-                item.setLotNo(productIn.getLotNo());
-                item.setProductIn(productIn);
-                return item;
-            }).collect(Collectors.toList());
-            productIn.setItems(items);
+            ProductIn productIn1 = productInRepository.save(productIn);
+
+
             try {
-                CompletableFuture.runAsync(() -> productInRepository.save(productIn));
+                CompletableFuture.runAsync(() ->saveItems(productIn));
             }catch (Exception e){
                 log.error("Exception occured while adding the product details "+e.getMessage());
 
             }
-
-
 
 //        itemsRepository.saveAll(items);
           log.info("Current room capacity {} for lot no {} and customer {} ",currentLotCapacity, productIn.getLotNo(),productIn.getCustomerId());
@@ -90,7 +79,21 @@ public class ProductInController {
         }
 
     }
-
+private void saveItems(ProductIn productIn){
+    Integer i = Integer.parseInt(productIn.getQuantity());
+    List<Items> items = IntStream.range(1, i+1).mapToObj(intValue -> {
+        Items item = new Items();
+        item.setItemNo(intValue);
+        Product product = new Product();
+        product.setId(productIn.getProductId());
+        item.setProduct(product);
+        item.setLotNo(productIn.getLotNo());
+        item.setProductInId(productIn.getId());
+        return item;
+    }).collect(Collectors.toList());
+    log.info("saved Item size is "+items.size());
+    itemsRepository.saveAll(items);
+}
     @GetMapping("/productIn/lookup")
     public ResponseEntity<List<ProductDetails>> getProductDetailsByLotNo(@RequestParam(required = false) String lotNo
             , @RequestParam(required = true) String storeId, @RequestParam(required = false) String roomId,@RequestParam(required = false) Long customerId) {
@@ -131,9 +134,9 @@ public class ProductInController {
                 List<LotSoldSchedule> soldSchedule = soldScheduleRepository.findByLotNo(item.getKey());
                 if(!CollectionUtils.isEmpty(soldSchedule)){
                     lotDetails.setLotStatus(soldSchedule.iterator().next().getSoldStatus());
-                    lotDetails.setSoldBossinessManId(soldSchedule.iterator().next().getSupplierId());
+                    lotDetails.setSoldBusinessManId(soldSchedule.iterator().next().getSupplierId());
                     Optional<Customer> supplier = customerRepository.findById(soldSchedule.iterator().next().getSupplierId());
-                    productDetails.setCustomerName(supplier.isPresent() ? supplier.get().getFirstName() + " " + (supplier.get().getLastName()!=null?supplier.get().getLastName():"") : "");
+                    productDetails.setSupplierName(supplier.isPresent() ? supplier.get().getFirstName() + " " + (supplier.get().getLastName()!=null?supplier.get().getLastName():"") : "");
 
                 }
 
@@ -142,10 +145,11 @@ public class ProductInController {
                     lotDetails.setProductType(product.getProductType());
                     lotDetails.setProductSize(product.getProductSize());
                 });
-                Set<Items> lotItems = item.getValue().stream()
-                        .map(x -> x.getItems())
-                        .flatMap(x -> x.stream())
-                        .collect(Collectors.toSet());
+//                Set<Items> lotItems = item.getValue().stream()
+//                        .map(x -> x.getItems())
+//                        .flatMap(x -> x.stream())
+//                        .collect(Collectors.toSet());
+                List<Items> lotItems= itemsRepository.findAllByLotNo(productIn.getLotNo());
                 lotDetails.setTotalQuantity(lotItems.size());
                 lotDetails.setAvailableQuantity(lotItems.size()-lotItems.stream().filter(itemDetail->itemDetail.getProductOutId()!=null && itemDetail.getWeight()!=null && itemDetail.getWeight()>0).count());
                 List<ItemDetails> itemDetailsList = lotItems.stream().map(items -> {

@@ -17,15 +17,20 @@ import java.util.Map;
 public class RestResponseEntityExceptionHandler 
   extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value   = { IllegalArgumentException.class, IllegalStateException.class })
-    protected ResponseEntity<Object> handleConflict(
-      RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "This should be application specific";
-        return handleExceptionInternal(ex, bodyOfResponse, 
-          new HttpHeaders(), HttpStatus.CONFLICT, request);
-    }
 
 
+
+    @ExceptionHandler(ClassNotFoundException.class)
+    public ResponseEntity<Object> handleClassNot(
+            BadRequestException ex, WebRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+
+}
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleCityNotFoundException(

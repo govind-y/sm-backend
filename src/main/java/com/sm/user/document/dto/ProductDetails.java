@@ -8,6 +8,7 @@ import java.util.List;
 public class ProductDetails {
     private String customerName;
     private Long customerId;
+    private String supplierName;
    private List<LotDetails> lotDetails;
 
 }

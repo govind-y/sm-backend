@@ -14,7 +14,7 @@ public class SoldScheduleRequest {
     private String lotNo;
     private Long soldQuantity;
     @NotNull
-    private Double amount;
+    private Double price;
     @NotNull
     private String soldType;//full, partial
     @NotNull
